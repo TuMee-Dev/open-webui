@@ -484,7 +484,7 @@ async def send_chat_message_event_by_id(
 async def delete_chat_by_id(request: Request, id: str, user=Depends(get_verified_user)):
     if user.role == "admin":
         chat = Chats.get_chat_by_id(id)
-        for tag in chat.meta.get("tags", []):
+        for tag in (chat.meta or {}).get("tags", []):
             if Chats.count_chats_by_tag_name_and_user_id(tag, user.id) == 1:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
 
@@ -501,7 +501,7 @@ async def delete_chat_by_id(request: Request, id: str, user=Depends(get_verified
             )
 
         chat = Chats.get_chat_by_id(id)
-        for tag in chat.meta.get("tags", []):
+        for tag in (chat.meta or {}).get("tags", []):
             if Chats.count_chats_by_tag_name_and_user_id(tag, user.id) == 1:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
 
@@ -795,7 +795,7 @@ async def delete_all_tags_by_id(id: str, user=Depends(get_verified_user)):
     if chat:
         Chats.delete_all_tags_by_id_and_user_id(id, user.id)
 
-        for tag in chat.meta.get("tags", []):
+        for tag in (chat.meta or {}).get("tags", []):
             if Chats.count_chats_by_tag_name_and_user_id(tag, user.id) == 0:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
 

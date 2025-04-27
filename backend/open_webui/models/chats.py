@@ -191,7 +191,7 @@ class ChatTable:
 
         self.delete_all_tags_by_id_and_user_id(id, user.id)
 
-        for tag in chat.meta.get("tags", []):
+        for tag in (chat.meta or {}).get("tags", []):
             if self.count_chats_by_tag_name_and_user_id(tag, user.id) == 0:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
 
