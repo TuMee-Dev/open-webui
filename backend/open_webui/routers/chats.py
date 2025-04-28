@@ -484,6 +484,11 @@ async def send_chat_message_event_by_id(
 async def delete_chat_by_id(request: Request, id: str, user=Depends(get_verified_user)):
     if user.role == "admin":
         chat = Chats.get_chat_by_id(id)
+        if not chat:
+            raise HTTPException(
+                status_code=status.HTTP_404_UNAUTHORIZED,
+                detail=ERROR_MESSAGES.NOT_FOUND,
+            )
         for tag in (chat.meta or {}).get("tags", []):
             if Chats.count_chats_by_tag_name_and_user_id(tag, user.id) == 1:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
@@ -501,6 +506,11 @@ async def delete_chat_by_id(request: Request, id: str, user=Depends(get_verified
             )
 
         chat = Chats.get_chat_by_id(id)
+        if not chat:
+            raise HTTPException(
+                status_code=status.HTTP_404_UNAUTHORIZED,
+                detail=ERROR_MESSAGES.NOT_FOUND,
+            )
         for tag in (chat.meta or {}).get("tags", []):
             if Chats.count_chats_by_tag_name_and_user_id(tag, user.id) == 1:
                 Tags.delete_tag_by_name_and_user_id(tag, user.id)
